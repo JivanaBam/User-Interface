@@ -28,7 +28,7 @@ export const registerValidationSchema = yup.object({
     .min(5, "Password must be atleast 5 characters."),
   role: yup
     .string()
-    .oneOf(["user", "buyer", "seller"])
+    .oneOf(["buyer", "seller", "user"])
     .required("Role is required."),
   gender: yup
     .string()
