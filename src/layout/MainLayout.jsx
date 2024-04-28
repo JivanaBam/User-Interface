@@ -1,13 +1,24 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Headers from "../component/Headers";
+import Footer from "../component/Footer";
+import { Box } from "@mui/material";
 
 const MainLayout = () => {
   return (
     <>
       <Headers />
-      <Outlet />
-      {/* <h3>Footer</h3> */}
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        margin="3rem 0"
+      >
+        <Outlet />
+      </Box>
+
+      <Footer />
     </>
   );
 };

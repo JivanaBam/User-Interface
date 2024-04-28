@@ -1,4 +1,5 @@
 import MenuIcon from "@mui/icons-material/Menu";
+import { Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -12,9 +13,9 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const drawerWidth = 240;
 const navItems = [
@@ -71,9 +72,9 @@ const Headers = (props) => {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", mb: "4rem" }}>
       <CssBaseline />
-      <AppBar component="nav" sx={{ background: "rgb(26, 77, 46)" }}>
+      <AppBar component="nav" sx={{ background: "#704264" }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -104,6 +105,20 @@ const Headers = (props) => {
               </Button>
             ))}
           </Box>
+
+          <Tooltip title="Logout">
+            <IconButton
+              sx={{ color: "#fff" }}
+              onClick={() => {
+                navigate("/login");
+
+                // clear local storage
+                localStorage.clear();
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Tooltip>
         </Toolbar>
       </AppBar>
       <nav>

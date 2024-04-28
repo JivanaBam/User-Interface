@@ -26,7 +26,7 @@ const Login = () => {
     },
 
     onSuccess: (res) => {
-      navigate("/home");
+      navigate("/product");
 
       // extract token, role, firstName from login respponse
       const accessToken = res?.data?.Token;
