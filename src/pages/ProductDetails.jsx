@@ -2,36 +2,63 @@ import {
   Box,
   Button,
   Chip,
-  CircularProgress,
+  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { fallbackImage } from "../constants/general.constants";
-import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import DeleteProductDialog from "../component/DeleteProductDialog";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import $axios from "../axios/axios.instance";
+import Loader from "../component/Loader";
 
 // Box => div
 // Stack => div which has display flex and direction column
 const ProductDetail = () => {
+  const navigate = useNavigate();
   const params = useParams();
   const productId = params?.id;
-  console.log(params);
+  // console.log(params);
+
+  const queryClient = useQueryClient();
+
+  // get user role
+  const userRole = localStorage.getItem("role");
 
   //   fetch product details
   const { isPending, data } = useQuery({
     queryKey: ["get-product-details"],
     queryFn: async () => {
-      return await $axios.get(`/product/details/${productId}`);
+      return await $axios.post(`/product/details/${productId}`);
     },
   });
 
-  console.log(data);
+  const productDetail = data?.data?.productDetails;
 
-  if (isPending) {
-    return <CircularProgress />;
+  // ordered quantity tracking
+  const [productCount, setProductCount] = useState(1);
+
+  // add to cart api hit
+  const { isPending: addItemToCartPending, mutate } = useMutation({
+    mutationKey: ["add-item-to-cart"],
+    mutationFn: async () => {
+      return await $axios.post(`/cart/item/add`, {
+        productId: productId,
+        orderedQuantity: productCount,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-cart-item-count");
+    },
+  });
+
+  if (isPending || addItemToCartPending) {
+    return <Loader />;
   }
 
   return (
@@ -63,67 +90,91 @@ const ProductDetail = () => {
           gap: "2rem",
         }}
       >
-        <Typography variant="h5">Winter Woolen Jacket</Typography>
+        <Typography variant="h5">{productDetail.name}</Typography>
         <Chip
-          label="Sonam"
+          label={productDetail.brand}
           variant="outlined"
           color="success"
           sx={{ fontSize: "1rem" }}
         />
         <Typography sx={{ textAlign: "justify" }}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Solutrecusandae accusantium dolor aliquam doloremque beatae minima
-          asperiores Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Solutrecusandae accusantium dolor aliquam doloremque beatae minima
-          asperiores Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Solutrecusandae accusantium dolor aliquam doloremque beatae minima
-          asperiores Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Solutrecusandae accusantium dolor aliquam doloremque beatae minima
-          asperiores Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Solutrecusandae accusantium dolor aliquam doloremque beatae minima
-          asperiores Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Solutrecusandae accusantium dolor aliquam doloremque beatae minima
-          asperiores
+          {productDetail.description}
         </Typography>
-        <Typography variant="h6">Price: $50.50</Typography>
+        <Typography variant="h6">Price: ${productDetail.price}</Typography>
 
         <Chip
           variant="outlined"
           color="success"
-          label="Grocery"
+          label={productDetail.category}
           sx={{ fontSize: "1rem" }}
         />
 
-        <Typography variant="h6">Available quantity: 10</Typography>
+        <Typography variant="h6">
+          Available quantity:{productDetail.availableQuantity}
+        </Typography>
 
         <Stack direction="row" spacing={4}>
           <Typography variant="h6">Free shipping</Typography>
           <Chip
             variant="outlined"
             color="success"
-            label="Yes"
+            label={productDetail.freeShipping ? "Yes" : "No"}
             sx={{ fontSize: "1rem" }}
           />
         </Stack>
 
-        <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
-          <Button
-            variant="contained"
-            color="success"
-            startIcon={<EditIcon />}
-            fullWidth
-          >
-            Edit
-          </Button>
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteIcon />}
-            fullWidth
-          >
-            Delete
-          </Button>
-        </Stack>
+        {userRole === "seller" && (
+          <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
+            <Button
+              variant="contained"
+              color="success"
+              startIcon={<EditIcon />}
+              fullWidth
+              onClick={() => {
+                navigate(`/product-edit/${productDetail._id}`);
+              }}
+            >
+              Edit
+            </Button>
+
+            <DeleteProductDialog />
+          </Stack>
+        )}
+
+        {userRole === "buyer" && (
+          <>
+            <Stack direction="row" spacing={3}>
+              <IconButton
+                onClick={() => {
+                  setProductCount((prevCount) => prevCount - 1);
+                }}
+                disabled={productCount === 1}
+              >
+                <RemoveIcon />
+              </IconButton>
+              <Typography variant="h4">{productCount}</Typography>
+              <IconButton
+                onClick={() => {
+                  setProductCount((prevCount) => prevCount + 1);
+                }}
+                disabled={productCount === productDetail?.availableQuantity}
+              >
+                <AddIcon />
+              </IconButton>
+            </Stack>
+
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => {
+                mutate();
+              }}
+              fullWidth
+            >
+              add to cart
+            </Button>
+          </>
+        )}
       </Box>
     </Box>
   );

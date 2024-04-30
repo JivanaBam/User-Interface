@@ -1,5 +1,5 @@
 import MenuIcon from "@mui/icons-material/Menu";
-import { Tooltip } from "@mui/material";
+import { Badge, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -16,6 +16,9 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import { useQuery } from "@tanstack/react-query";
+import $axios from "../axios/axios.instance";
 
 const drawerWidth = 240;
 const navItems = [
@@ -44,6 +47,20 @@ const Headers = (props) => {
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
+
+  // get user role
+  const userRole = localStorage.getItem("role");
+
+  // get cart item count
+  const { isPending, data } = useQuery({
+    queryKey: ["get-cart-item-count"],
+    queryFn: async () => {
+      return await $axios.get("/cart/item/count");
+    },
+    enabled: userRole === "buyer",
+  });
+
+  const cartItemCount = data?.data?.cartItemCount;
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -104,8 +121,29 @@ const Headers = (props) => {
                 {item.name}
               </Button>
             ))}
-          </Box>
 
+            {userRole === "buyer" && (
+              <IconButton
+                sx={{ color: "#fff" }}
+                onClick={() => {
+                  navigate("/cart");
+                }}
+              >
+                <Badge badgeContent={cartItemCount} color="success">
+                  <ShoppingCartOutlinedIcon />
+                </Badge>
+              </IconButton>
+            )}
+          </Box>
+          <Typography
+            sx={{
+              margin: "0 1rem",
+              fontWeight: "bold",
+              textTransform: "capitalize",
+            }}
+          >
+            Hi, {localStorage.getItem("firstName")}
+          </Typography>
           <Tooltip title="Logout">
             <IconButton
               sx={{ color: "#fff" }}

@@ -37,7 +37,7 @@ const ProductCard = (props) => {
           <Chip label={props.brand} color="secondary" variant="outlined" />
         </Stack>
 
-        <Typography>Price: रु{props.price}</Typography>
+        <Typography>Price: ${props.price}</Typography>
 
         <Typography variant="body2" color="text.secondary">
           {props.description}...

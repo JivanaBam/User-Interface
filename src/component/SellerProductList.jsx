@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import $axios from "../axios/axios.instance";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import ProductCard from "./ProductCard";
 import { useNavigate } from "react-router-dom";
+import Loader from "./Loader";
 
 const SellerProductList = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const SellerProductList = () => {
     queryFn: async () => {
       return await $axios.post("/product/list/seller", {
         page: 1,
-        limit: 9,
+        limit: 3,
       });
     },
   });
@@ -21,7 +22,7 @@ const SellerProductList = () => {
   const productList = data?.data?.productList;
 
   if (isPending) {
-    return <CircularProgress />;
+    return <Loader />;
   }
 
   return (
