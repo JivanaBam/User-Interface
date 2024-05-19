@@ -5,6 +5,7 @@ import OrderSummary from "../component/OrderSummary";
 import { useQuery } from "@tanstack/react-query";
 import KeepShopping from "../component/KeepShopping";
 import $axios from "../axios/axios.instance";
+import Loader from "../component/Loader";
 
 const Cart = () => {
   // get cart items
@@ -16,16 +17,17 @@ const Cart = () => {
   });
 
   const cartData = data?.data?.cartData;
+  // console.log(cartData);
+
+  const orderSummary = data?.data?.orderSummary;
+  // console.log(orderSummary);
 
   if (isPending) {
-    return <CircularProgress />;
+    return <Loader />;
   }
 
   return (
     <>
-      <Typography variant="h3" sx={{ marginBottom: "2rem" }}>
-        Shopping cart
-      </Typography>
       {cartData?.length === 0 ? (
         <KeepShopping />
       ) : (
@@ -34,12 +36,12 @@ const Cart = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-
+            gap: "4rem",
             width: "90%",
           }}
         >
           <CartItemTable cartData={cartData} />
-          <OrderSummary />
+          <OrderSummary orderSummary={orderSummary} />
         </Box>
       )}
     </>

@@ -14,16 +14,20 @@ const ProductCard = (props) => {
   return (
     <Card
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        width: "400px",
+        width: "350px",
         boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
       }}
     >
       <CardMedia
-        sx={{ height: "300px", width: "400px", cursor: "pointer" }}
+        component="img"
+        sx={{
+          height: 400,
+          width: "100%",
+          cursor: "pointer",
+          objectFit: "cover",
+        }}
         image={props?.image || fallbackImage}
-        title="watch"
+        title={`${props?.name}- ${props?.brand}`}
         onClick={() => {
           navigate(`/product-details/${props._id}`);
         }}
@@ -37,20 +41,28 @@ const ProductCard = (props) => {
           <Chip label={props.brand} color="secondary" variant="outlined" />
         </Stack>
 
-        <Typography>Price: ${props.price}</Typography>
-
-        <Typography variant="body2" color="text.secondary">
-          {props.description}...
-        </Typography>
+        <Stack direction="row">
+          <Typography>Price: Rs.{props.price}</Typography>
+        </Stack>
+        <Stack direction="row" spacing={4}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            textAlign="justify"
+            sx={{ height: "50px" }}
+          >
+            {props.description}...
+          </Typography>
+        </Stack>
       </CardContent>
       <CardActions>
         <Button
           variant="contained"
           color="secondary"
+          fullWidth
           onClick={() => {
             navigate(`/product-details/${props._id}`);
           }}
-          fullWidth
         >
           Explore
         </Button>

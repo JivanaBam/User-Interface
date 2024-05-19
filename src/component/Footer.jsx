@@ -6,7 +6,7 @@ const Footer = () => {
     <Box
       sx={{
         background: "#BB8493",
-        height: "40px",
+        height: "50px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -14,7 +14,7 @@ const Footer = () => {
       }}
     >
       <Typography variant="h6" sx={{ color: "#fff" }}>
-        © 2020 Copyright: Nepal Electronic Mart
+        Copyright © 2024: Nepal Electronic Mart
       </Typography>
     </Box>
   );

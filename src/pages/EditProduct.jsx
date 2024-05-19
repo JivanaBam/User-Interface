@@ -2,13 +2,14 @@ import {
   Box,
   Button,
   Checkbox,
-  CircularProgress,
   FormControl,
   FormControlLabel,
   FormHelperText,
+  InputAdornment,
   InputLabel,
   LinearProgress,
   MenuItem,
+  OutlinedInput,
   Select,
   TextField,
   Typography,
@@ -20,6 +21,7 @@ import addProductValidationSchema from "../validationSchema/add.product.validati
 import { productCategories } from "../constants/general.constants";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import $axios from "../axios/axios.instance";
+import Loader from "../component/Loader";
 
 const EditProduct = () => {
   const navigate = useNavigate();
@@ -52,7 +54,7 @@ const EditProduct = () => {
   });
 
   if (isPending) {
-    return <CircularProgress />;
+    return <Loader />;
   }
   return (
     <Box>
@@ -112,7 +114,7 @@ const EditProduct = () => {
                 <FormHelperText error>{formik.errors.brand}</FormHelperText>
               ) : null}
             </FormControl>
-            <FormControl fullWidth>
+            {/* <FormControl fullWidth>
               <TextField
                 label="Price"
                 {...formik.getFieldProps("price")}
@@ -123,7 +125,20 @@ const EditProduct = () => {
               {formik.touched.price && formik.errors.price ? (
                 <FormHelperText error>{formik.errors.price}</FormHelperText>
               ) : null}
+            </FormControl> */}
+
+            <FormControl fullWidth required>
+              <InputLabel>Price</InputLabel>
+              <OutlinedInput
+                startAdornment={
+                  <InputAdornment position="start">Rs.</InputAdornment>
+                }
+                label="Price"
+                {...formik.getFieldProps("price")}
+                type="number"
+              />
             </FormControl>
+
             <FormControl fullWidth>
               <TextField
                 label="Quantity"

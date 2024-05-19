@@ -5,7 +5,6 @@ import {
   TextField,
   FormHelperText,
   Button,
-  CircularProgress,
   LinearProgress,
 } from "@mui/material";
 import React from "react";
@@ -28,7 +27,7 @@ const Login = () => {
     onSuccess: (res) => {
       navigate("/product");
 
-      // extract token, role, firstName from login respponse
+      // extract token, role, firstName from login response
       const accessToken = res?.data?.Token;
       const role = res?.data?.userDetails?.role;
       const firstName = res?.data?.userDetails?.firstName;

@@ -11,11 +11,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import { fallbackImage } from "../constants/general.constants";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import DeleteProductDialog from "../component/DeleteProductDialog";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import $axios from "../axios/axios.instance";
 import Loader from "../component/Loader";
+import DeleteProductDialog from "../component/DeleteProductDialog";
 
 // Box => div
 // Stack => div which has display flex and direction column
@@ -54,6 +54,7 @@ const ProductDetail = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("get-cart-item-count");
+      navigate("/cart");
     },
   });
 
@@ -66,8 +67,7 @@ const ProductDetail = () => {
       sx={{
         display: "flex",
         boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
-        padding: "2rem",
-        mt: "5rem",
+        padding: "1rem",
       }}
     >
       <Box
@@ -78,7 +78,11 @@ const ProductDetail = () => {
           minWidth: "50%",
         }}
       >
-        <img src={fallbackImage} alt="" />
+        <img
+          src={productDetail?.image || fallbackImage}
+          alt=""
+          style={{ width: "90%" }}
+        />
       </Box>
       <Box
         sx={{
@@ -100,7 +104,7 @@ const ProductDetail = () => {
         <Typography sx={{ textAlign: "justify" }}>
           {productDetail.description}
         </Typography>
-        <Typography variant="h6">Price: ${productDetail.price}</Typography>
+        <Typography variant="h6">Price: Rs.{productDetail.price}</Typography>
 
         <Chip
           variant="outlined"
@@ -117,7 +121,7 @@ const ProductDetail = () => {
           <Typography variant="h6">Free shipping</Typography>
           <Chip
             variant="outlined"
-            color="success"
+            color={productDetail.freeShipping ? "success" : "error"}
             label={productDetail.freeShipping ? "Yes" : "No"}
             sx={{ fontSize: "1rem" }}
           />

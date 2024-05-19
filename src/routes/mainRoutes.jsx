@@ -6,11 +6,16 @@ import AddProduct from "../pages/AddProduct";
 import ProductDetail from "../pages/ProductDetails";
 import EditProduct from "../pages/EditProduct";
 import Cart from "../pages/Cart";
+import AuthGuard from "../guard/AuthGuard";
 
 const mainRoutes = [
   {
     path: "/",
-    element: <MainLayout />,
+    element: (
+      <AuthGuard>
+        <MainLayout />
+      </AuthGuard>
+    ),
     children: [
       {
         path: "home",

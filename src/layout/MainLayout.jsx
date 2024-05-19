@@ -13,7 +13,7 @@ const MainLayout = () => {
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
-        margin="3rem 0"
+        margin="3rem "
       >
         <Outlet />
       </Box>

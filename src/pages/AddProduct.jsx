@@ -6,21 +6,29 @@ import {
   FormControl,
   FormControlLabel,
   FormHelperText,
+  InputAdornment,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Select,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { productCategories } from "../constants/general.constants";
 import $axios from "../axios/axios.instance";
 import addProductValidationSchema from "../validationSchema/add.product.validation.schema";
+import axios from "axios";
 
 const AddProduct = () => {
+  const [productImage, setProductImage] = useState(null);
+  const [localUrl, setLocalUrl] = useState("");
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const { isPending, mutate } = useMutation({
@@ -52,7 +60,35 @@ const AddProduct = () => {
             description: "",
           }}
           validationSchema={addProductValidationSchema}
-          onSubmit={(values) => {
+          onSubmit={async (values) => {
+            let imageUrl = null;
+
+            if (productImage) {
+              const cloudName = "dkm9ich8t";
+              const uploadPreset = "nepal_emart";
+
+              const data = new FormData();
+              data.append("file", productImage);
+              data.append("upload_preset", uploadPreset);
+              data.append("cloud_name", cloudName);
+
+              try {
+                setImageUploadLoading(true);
+                const response = await axios.post(
+                  `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+                  data
+                );
+
+                imageUrl = response?.data?.secure_url;
+                setImageUploadLoading(false);
+              } catch (error) {
+                setImageUploadLoading(false);
+                console.log(error.message);
+              }
+            }
+
+            values.image = imageUrl;
+
             mutate(values);
           }}
         >
@@ -71,6 +107,25 @@ const AddProduct = () => {
               }}
             >
               <Typography variant="h5">Add Product</Typography>
+
+              {localUrl && (
+                <Stack sx={{ height: "250px" }}>
+                  <img src={localUrl} alt="" height="100%" />
+                </Stack>
+              )}
+
+              <FormControl>
+                <input
+                  type="file"
+                  onChange={(event) => {
+                    const file = event.target.files[0];
+
+                    setProductImage(file);
+
+                    setLocalUrl(URL.createObjectURL(file));
+                  }}
+                />
+              </FormControl>
 
               <FormControl fullWidth>
                 <TextField
@@ -94,7 +149,7 @@ const AddProduct = () => {
                   <FormHelperText error>{formik.errors.brand}</FormHelperText>
                 ) : null}
               </FormControl>
-              <FormControl fullWidth>
+              {/* <FormControl fullWidth>
                 <TextField
                   label="Price"
                   {...formik.getFieldProps("price")}
@@ -105,7 +160,21 @@ const AddProduct = () => {
                 {formik.touched.price && formik.errors.price ? (
                   <FormHelperText error>{formik.errors.price}</FormHelperText>
                 ) : null}
+              </FormControl> */}
+
+              <FormControl fullWidth>
+                <InputLabel>Price</InputLabel>
+                <OutlinedInput
+                  startAdornment={
+                    <InputAdornment position="start">Rs.</InputAdornment>
+                  }
+                  label="Price"
+                  {...formik.getFieldProps("price")}
+                  type="number"
+                  required
+                />
               </FormControl>
+
               <FormControl fullWidth>
                 <TextField
                   label="Quantity"
