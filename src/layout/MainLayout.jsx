@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Headers from "../component/Headers";
 import Footer from "../component/Footer";
 import { Box } from "@mui/material";
+import CustomSnackbar from "../component/CustomSnackbar";
 
 const MainLayout = () => {
   return (
@@ -17,7 +18,7 @@ const MainLayout = () => {
       >
         <Outlet />
       </Box>
-
+      <CustomSnackbar />
       <Footer />
     </>
   );

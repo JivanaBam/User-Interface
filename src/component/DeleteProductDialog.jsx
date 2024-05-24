@@ -10,8 +10,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import $axios from "../axios/axios.instance";
 import { CircularProgress } from "@mui/material";
+import { useDispatch } from "react-redux";
+import {
+  openErrorSnackbar,
+  openSuccessSnackbar,
+} from "../store/slices/snackbarSlice";
 
 const DeleteProductDialog = () => {
+  const dispatch = useDispatch();
   const params = useParams();
 
   const productId = params?.id;
@@ -34,8 +40,12 @@ const DeleteProductDialog = () => {
     mutationFn: async () => {
       return await $axios.delete(`/product/delete/${productId}`);
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
       navigate("/product");
+      dispatch(openSuccessSnackbar(res?.data?.message));
+    },
+    onError: (error) => {
+      dispatch(openErrorSnackbar(error?.response?.data?.message));
     },
   });
 

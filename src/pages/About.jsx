@@ -6,17 +6,17 @@ const About = () => {
     <Box sx={{ display: "flex", padding: "2rem" }}>
       <Stack sx={{ width: "50%" }}>
         <img
-          src="src/assets/nep_house.jpg"
+          src="src/assets/img.jpg"
           alt="Nep mart image"
           width="95%"
           height="100%"
         />
-        <img
+        {/* <img
           src="src/assets/nep_market.webp"
           alt="Nep mart image"
           width="95%"
           height="100%"
-        />
+        /> */}
       </Stack>
       <Stack spacing={1} sx={{ width: "50%" }}>
         <Typography variant="h4" sx={{ textAlign: "justify" }}>

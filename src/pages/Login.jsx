@@ -13,9 +13,12 @@ import { loginValidationSchema } from "../validationSchema/login.validation.sche
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import $axios from "../axios/axios.instance";
+import { useDispatch } from "react-redux";
+import { openErrorSnackbar } from "../store/slices/snackbarSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { isPending, mutate } = useMutation({
     mutationKey: ["login-user"],
@@ -38,7 +41,7 @@ const Login = () => {
       localStorage.setItem("firstName", firstName);
     },
     onError: (error) => {
-      console.log(error.response.data.message);
+      dispatch(openErrorSnackbar(error?.response?.data?.message));
     },
   });
 

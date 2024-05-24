@@ -21,8 +21,11 @@ import ClearIcon from "@mui/icons-material/Clear";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import { useDispatch } from "react-redux";
+import { openErrorSnackbar } from "../store/slices/snackbarSlice";
 
 const CartItemTable = ({ cartData }) => {
+  const dispatch = useDispatch();
   const queryClient = useQueryClient();
 
   //   clear cart api
@@ -34,6 +37,9 @@ const CartItemTable = ({ cartData }) => {
     onSuccess: () => {
       // re-hit get cart item list api
       queryClient.invalidateQueries("get-cart-item-list");
+    },
+    onError: (error) => {
+      dispatch(openErrorSnackbar(error?.response?.data?.message));
     },
   });
 
@@ -49,6 +55,9 @@ const CartItemTable = ({ cartData }) => {
     onSuccess: () => {
       // re-hit get cart item list api
       queryClient.invalidateQueries("get-cart-item-list");
+    },
+    onError: (error) => {
+      dispatch(openErrorSnackbar(error?.response?.data?.message));
     },
   });
 
@@ -66,6 +75,9 @@ const CartItemTable = ({ cartData }) => {
       },
       onSuccess: () => {
         queryClient.invalidateQueries("get-cart-item-list");
+      },
+      onError: (error) => {
+        dispatch(openErrorSnackbar(error?.response?.data?.message));
       },
     });
 

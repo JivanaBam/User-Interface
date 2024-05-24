@@ -23,6 +23,11 @@ import { productCategories } from "../constants/general.constants";
 import $axios from "../axios/axios.instance";
 import addProductValidationSchema from "../validationSchema/add.product.validation.schema";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import {
+  openErrorSnackbar,
+  openSuccessSnackbar,
+} from "../store/slices/snackbarSlice";
 
 const AddProduct = () => {
   const [productImage, setProductImage] = useState(null);
@@ -30,18 +35,23 @@ const AddProduct = () => {
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { isPending, mutate } = useMutation({
     mutationKey: ["add-product"],
     mutationFn: async (values) => {
       return await $axios.post("/product/add", values);
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
       navigate("/product");
+      dispatch(openSuccessSnackbar(res?.data?.message));
+    },
+    onError: (error) => {
+      dispatch(openErrorSnackbar(error?.response?.data?.message));
     },
   });
 
-  if (isPending) {
+  if (isPending || imageUploadLoading) {
     return <CircularProgress />;
   }
 

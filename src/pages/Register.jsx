@@ -21,8 +21,14 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useMutation } from "@tanstack/react-query";
 import $axios from "../axios/axios.instance";
+import { useDispatch } from "react-redux";
+import {
+  openErrorSnackbar,
+  openSuccessSnackbar,
+} from "../store/slices/snackbarSlice";
 
 const Register = () => {
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = React.useState(false);
 
   const navigate = useNavigate();
@@ -42,9 +48,10 @@ const Register = () => {
     },
     onSuccess: (res) => {
       navigate("/login");
+      dispatch(openSuccessSnackbar(res?.data?.message));
     },
     onError: (error) => {
-      console.log(error.response.data.message);
+      dispatch(openErrorSnackbar(error?.response?.data?.message));
     },
   });
 

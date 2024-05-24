@@ -16,10 +16,17 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import $axios from "../axios/axios.instance";
 import Loader from "../component/Loader";
 import DeleteProductDialog from "../component/DeleteProductDialog";
+import { useDispatch } from "react-redux";
+import {
+  openErrorSnackbar,
+  openSuccessSnackbar,
+} from "../store/slices/snackbarSlice";
 
 // Box => div
 // Stack => div which has display flex and direction column
 const ProductDetail = () => {
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const params = useParams();
   const productId = params?.id;
@@ -52,9 +59,14 @@ const ProductDetail = () => {
         orderedQuantity: productCount,
       });
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
+      console.log(res);
       queryClient.invalidateQueries("get-cart-item-count");
       navigate("/cart");
+      dispatch(openSuccessSnackbar(res?.data?.message));
+    },
+    onError: (error) => {
+      dispatch(openErrorSnackbar(error?.response?.data?.message));
     },
   });
 

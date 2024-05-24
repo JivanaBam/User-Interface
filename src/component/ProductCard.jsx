@@ -14,7 +14,7 @@ const ProductCard = (props) => {
   return (
     <Card
       sx={{
-        width: "350px",
+        width: "300px",
         boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
       }}
     >

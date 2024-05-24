@@ -8,11 +8,13 @@ import {
   InputAdornment,
   OutlinedInput,
   Pagination,
+  Stack,
   TextField,
 } from "@mui/material";
 import ProductCard from "./ProductCard";
 import Loader from "./Loader";
 import SearchIcon from "@mui/icons-material/Search";
+import ProductFilterDialog from "./ProductFilterDialog";
 
 const BuyerProductList = () => {
   const [searchText, setSearchText] = useState(" ");
@@ -26,13 +28,14 @@ const BuyerProductList = () => {
     queryFn: async () => {
       return await $axios.post("/product/list/buyer", {
         page: currentPage,
-        limit: 3,
+        limit: 6,
         searchText: searchText || null,
       });
     },
   });
 
   const productList = data?.data?.productList;
+  // console.log(productList);
   const totalPage = data?.data?.totalPages;
 
   if (isPending) {
@@ -41,31 +44,23 @@ const BuyerProductList = () => {
 
   return (
     <>
-      {/* <TextField
-        sx={{ marginBottom: "2rem" }}
-        placeholder="search product"
-        variant="outlined"
-        onChange={(event) => {
-          const searchText = event?.target?.value;
-
-          setSearchItem(searchText);
-        }}
-      /> */}
-
-      <FormControl variant="standard" sx={{ marginBottom: "1rem" }}>
-        <OutlinedInput
-          onChange={(event) => {
-            setSearchText(event?.target?.value);
-            setCurrentPage(1);
-          }}
-          placeholder="search products here..."
-          startAdornment={
-            <InputAdornment position="start" sx={{ color: "purple" }}>
-              <SearchIcon sx={{ fontSize: "2rem" }} />
-            </InputAdornment>
-          }
-        />
-      </FormControl>
+      <Stack direction="row" spacing="1rem" sx={{ marginBottom: "1rem" }}>
+        <ProductFilterDialog />
+        <FormControl variant="standard">
+          <OutlinedInput
+            onChange={(event) => {
+              setSearchText(event?.target?.value);
+              setCurrentPage(1);
+            }}
+            placeholder="search products here..."
+            startAdornment={
+              <InputAdornment position="start" sx={{ color: "purple" }}>
+                <SearchIcon sx={{ fontSize: "2rem" }} />
+              </InputAdornment>
+            }
+          />
+        </FormControl>
+      </Stack>
 
       <Box
         sx={{
