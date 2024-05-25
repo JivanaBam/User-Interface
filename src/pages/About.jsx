@@ -11,12 +11,6 @@ const About = () => {
           width="95%"
           height="100%"
         />
-        {/* <img
-          src="src/assets/nep_market.webp"
-          alt="Nep mart image"
-          width="95%"
-          height="100%"
-        /> */}
       </Stack>
       <Stack spacing={1} sx={{ width: "50%" }}>
         <Typography variant="h4" sx={{ textAlign: "justify" }}>
